@@ -1,0 +1,9 @@
+dependencies:
+- name: partials
+  repository: file://../partials
+  version: 0.1.0
+- name: tracing
+  repository: file://../add-ons/tracing
+  version: 0.1.0
+digest: sha256:c4aeb5b7ee4d0c6b869f651d99c80589ed002ab6e69c983bb24e91e4a0d28d23
+generated: "2020-04-14T08:46:11.4000419+08:00"

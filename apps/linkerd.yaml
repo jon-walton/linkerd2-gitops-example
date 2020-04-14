@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '50'
+spec:
+  destination:
+    namespace: linkerd
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: https://raw.githubusercontent.com/jon-walton/linkerd2-gitops-example/master/charts
+    chart: linkerd2
+    targetRevision: '2.7.1'
+    helm:
+      # This doesn't seem to be working
+      # fileParameters:
+      #   - name: global.identityTrustAnchorsPEM
+      #     path: example-resources/ca.crt
+      values: |
+        global:
+          linkerdVersion: stable-2.7.1
+
+          proxy:
+            image:
+              version: stable-2.7.1
+
+          tlsManager: external
+
+          identityTrustAnchorsPEM: |
+            -----BEGIN CERTIFICATE-----
+            MIIBwjCCAWegAwIBAgIRANZHE+4k3bVDcquU2X0F848wCgYIKoZIzj0EAwIwKTEn
+            MCUGA1UEAxMeaWRlbnRpdHkubGlua2VyZC5jbHVzdGVyLmxvY2FsMB4XDTIwMDQx
+            NDAzMTgwN1oXDTMwMDQxMjAzMTgwN1owKTEnMCUGA1UEAxMeaWRlbnRpdHkubGlu
+            a2VyZC5jbHVzdGVyLmxvY2FsMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7BOX
+            rnh6G4TbXdgc9Y1T3vaXMstECY4LPMVXShZVkIzY7TB3RncjYknMeyJ5Zcky1G7E
+            h6W1sWovnxGs4seWP6NwMG4wDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYB
+            Af8CAQEwHQYDVR0OBBYEFDfHb24Ian8LUvN+Aa/Yh3qpuU3eMCkGA1UdEQQiMCCC
+            HmlkZW50aXR5LmxpbmtlcmQuY2x1c3Rlci5sb2NhbDAKBggqhkjOPQQDAgNJADBG
+            AiEA6Hq/Erwa/XEaQL3OSF/BWcLCUxoRraJknfqGbKRGCTQCIQC+yiwF3g9FGVG2
+            sSDrhZARAnkdUfDwC1JjEcge7UotZg==
+            -----END CERTIFICATE-----
+
+        debugContainer:
+          image:
+            version: stable-2.7.1
+
+        profileValidator:
+          webhookAnnotations:
+            cert-manager.io/inject-ca-from: linkerd/linkerd-proxy-injector-tls
+
+        proxyInjector:
+          webhookAnnotations:
+            cert-manager.io/inject-ca-from: linkerd/linkerd-sp-validator-tls
+
+        tap:
+          apiServiceAnnotations:
+            cert-manager.io/inject-ca-from: linkerd/linkerd-tap-tls
+
+        tap:
+          apiServiceAnnotations:
+            cert-manager.io/inject-ca-from: linkerd/linkerd-smi-metrics-tls
+
+        identity:
+          issuer:
+            scheme: kubernetes.io/tls
