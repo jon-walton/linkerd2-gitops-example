@@ -55,6 +55,8 @@ We will simulate the creation and deployment of the CA public / private keys. I 
 kubectl -n linkerd create secret tls linkerd-trust-anchor --cert=./example-resources/ca.crt --key=./example-resources/ca.key
 ```
 
+#### Application Deployment
+
 I prefer to deploy a single instance of ArgoCD to manage multiple clusters. For this example, we'll deploy everything to the same cluster. ArgoCD automatically registers the cluster it's deployed on. We can then apply an ArgoCD `Application` to manage the other applications deployed to the cluster.
 
 **Note** - Update `apps/linkerd.yaml` to set the image to one built from <https://github.com/linkerd/linkerd2/pull/4232>. Failing to do so will cause the proxy-injector, tap and sp-validator pods to crash on startup.
