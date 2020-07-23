@@ -1,0 +1,32 @@
+revisionHistoryLimit: 2
+
+controller:
+  nodeSelector:
+    ingress-ready: 'true'
+
+  podAnnotations:
+    # We're terminating TLS in the ingress controller.
+    # Configuring Linkerd to skip incoming port 443 let's the
+    #   ingress controller to "see" the correct client IP
+    config.linkerd.io/skip-inbound-ports: "443"
+
+  config:
+    enable-brotli: "true"
+    http-snippet: |
+      more_clear_headers Server l5d-server-id l5d-remote-ip;
+
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+
+  admissionWebhooks:
+    enabled: true
+    patch:
+      enabled: true
+      podAnnotations:
+        linkerd.io/inject: disabled
+
+defaultBackend:
+  enabled: false

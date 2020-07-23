@@ -1,0 +1,21 @@
+# After installing ArgoCD, apply this file manually
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-bootstrap
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: https://github.com/jon-walton/linkerd2-gitops-example.git
+    targetRevision: HEAD
+    path: argocd/environments/
+    directory:
+      recurse: true
