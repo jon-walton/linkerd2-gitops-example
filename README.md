@@ -29,3 +29,14 @@ Terraform does the following:
 - Deploys ingress-nginx
 - Deploys ArgoCD
     - Bootstraps ArgoCD to monitor the `./argocd/environments` folder for applications to install
+
+**Login to ArgoCD**
+
+https://argoproj.github.io/argo-cd/getting_started/#port-forwarding
+
+```bash
+# Get the admin password
+kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
