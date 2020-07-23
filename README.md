@@ -18,7 +18,9 @@ kind create cluster --config ./cluster.yaml --wait 5m
 **Deploy**
 
 ```bash
-terraform apply ./terraform
+cd ./terraform
+terraform init
+terraform apply
 ```
 
 Terraform does the following:
