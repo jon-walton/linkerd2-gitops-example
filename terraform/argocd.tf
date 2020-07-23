@@ -31,7 +31,8 @@ resource "helm_release" "argocd" {
 
 resource "helm_release" "argocd_bootstrap" {
   depends_on = [
-    helm_release.argocd
+    helm_release.argocd,
+    helm_release.linkerd2
   ]
 
   name      = "argocd-bootstrap"
