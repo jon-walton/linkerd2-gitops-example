@@ -4,10 +4,10 @@ metadata:
   name: dev
   namespace: argocd
 spec:
-  description: Developerment environment
+  description: Development Environment
   sourceRepos:
     - '*'
 
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: 'dev'
+      namespace: '*'
